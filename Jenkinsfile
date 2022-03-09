@@ -6,7 +6,6 @@
      }
       environment {
        RHT_OCP4_DEV_USER = 'dggzdv'
-       DEPLOYMENT_STAGE = 'shopping-cart-stage'
        DEPLOYMENT_PRODUCTION = 'shopping-cart-production'
      }
 
@@ -46,20 +45,6 @@
           '''
           }
        }
-      stage('Deploy - Stage') {
-         environment {
-         APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-stage"
-         QUAY = credentials('QUAY_USER')
-         }
-       steps {
-        sh """
-        oc set image \
-        deployment ${DEPLOYMENT_STAGE} \
-        shopping-cart-stage=quay.io/${QUAY_USR}/do400-deploying-environments:build-${BUILD_NUMBER} \
-        -n ${APP_NAMESPACE} --record
-        """
-          }
-      }
       stage('Deploy - Production') {
         environment {
           APP_NAMESPACE = "${RHT_OCP4_DEV_USER}-shopping-cart-production"
@@ -67,12 +52,12 @@
         }
         input { message 'Deploy to production?' }
           steps {
-          sh """
-          oc set image \
-          deployment ${DEPLOYMENT_PRODUCTION} \
-          shopping-cart-production=quay.io/${QUAY_USR}/do400-deploying-environments:build-${BUILD_NUMBER} \
-          -n ${APP_NAMESPACE} --record
-          """
+             sh '''
+             oc set image \
+             deployment ${DEPLOYMENT_PRODUCTION} \
+             shopping-cart-production=quay.io/${QUAY_USR}/do400-deploying-environments:build-${BUILD_NUMBER} \
+             -n ${APP_NAMESPACE} --record
+             '''
           }
      }
 
