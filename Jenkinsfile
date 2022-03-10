@@ -1,7 +1,6 @@
 pipeline{
  agent {
    node {
-     withEnv(['PATH=/kubefiles/']) {
      label 'maven'
    }
  }
@@ -10,6 +9,7 @@ pipeline{
     ENVIRONMENT='production'
     DEPLOYMENT_CONFIG_PRODUCTION = 'shopping-cart-production'
  }
+withEnv(['PATH=/kubefiles/']) {
  stages {
    stage('Test') {
      steps {
@@ -53,7 +53,7 @@ pipeline{
       steps{
         sh "oc rollout latest dc/${DEPLOYMENT_CONFIG_PRODUCTION} -n ${APP_NAMESPACE}"
       }
+     }
    }
- }
  }
 }
