@@ -42,6 +42,7 @@ pipeline{
       steps{
         sh "oc process -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f ./kubefiles/application-template.yml -p QUAY_USER_OR_GROUP=$MY_QUAY_USR -p APP_ENVIRONMENT=${ENVIRONMENT} > ./kubefiles/${DEPLOYMENT_CONFIG_PRODUCTION}.yml "
         sh "oc apply -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f ./kubefiles/${DEPLOYMENT_CONFIG_PRODUCTION}.yml"
+        sh "oc policy add-role-to-user edit system:serviceaccount:${RHT_OCP4_DEV_USER}-jenkins:jenkins"
       }
     }
    stage('Deploy - Production Env') {
