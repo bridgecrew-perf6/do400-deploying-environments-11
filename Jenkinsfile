@@ -9,7 +9,6 @@ pipeline{
     ENVIRONMENT='production'
     DEPLOYMENT_CONFIG_PRODUCTION = 'shopping-cart-production'
  }
-withEnv(['PATH=/kubefiles/']) {
  stages {
    stage('Test') {
      steps {
@@ -41,8 +40,8 @@ withEnv(['PATH=/kubefiles/']) {
    stage('Template - Prepate') {
     environment { MY_QUAY = credentials('DO400_QUAY_USER') }
       steps{
-        sh "oc process -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f $PATH application-template.yml -p QUAY_USER_OR_GROUP=$MY_QUAY_USR -p APP_ENVIRONMENT=${ENVIRONMENT} > #PATH ${DEPLOYMENT_CONFIG_PRODUCTION}.yml "
-        sh "oc apply -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f #PATH ${DEPLOYMENT_CONFIG_PRODUCTION}.yml"
+        sh "oc process -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f /kubefiles/application-template.yml -p QUAY_USER_OR_GROUP=$MY_QUAY_USR -p APP_ENVIRONMENT=${ENVIRONMENT} > #PATH ${DEPLOYMENT_CONFIG_PRODUCTION}.yml "
+        sh "oc apply -n ${RHT_OCP4_DEV_USER}-${DEPLOYMENT_CONFIG_PRODUCTION} -f /kubefiles/${DEPLOYMENT_CONFIG_PRODUCTION}.yml"
       }
     }
    stage('Deploy - Production Env') {
@@ -54,6 +53,5 @@ withEnv(['PATH=/kubefiles/']) {
         sh "oc rollout latest dc/${DEPLOYMENT_CONFIG_PRODUCTION} -n ${APP_NAMESPACE}"
       }
      }
-   }
  }
 }
